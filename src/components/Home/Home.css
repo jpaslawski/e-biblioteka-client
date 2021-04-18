@@ -1,0 +1,17 @@
+.description {
+    text-align: justify;
+    margin-top: 20px;
+}
+
+.content ul {
+    width: 100%;
+    list-style: square;
+    list-style-position: outside;
+    padding-left: 20px;
+}
+
+.content ul li {
+    text-transform: none;
+    flex-direction: row;
+    padding: 5px;
+}

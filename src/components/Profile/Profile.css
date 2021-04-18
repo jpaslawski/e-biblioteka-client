@@ -1,0 +1,105 @@
+input {
+    border: none;
+    outline: none;
+    width: 100%;
+    background-color: #E6E6E6;
+    padding: 20px;
+    margin: 10px auto;
+}
+
+.user-profile {
+    display: flex;
+}
+
+.user-profile .user-info,
+.user-profile .user-contact {
+    margin: 20px;
+    transform: none;
+    position: relative;
+    width: 50%;
+    background-color: #F6F6F6;
+    padding: 20px 40px 90px 40px;
+}
+
+.user-profile h2 {
+    margin-bottom: 20px;
+}
+
+.user-profile .user-item {
+    display: flex;
+}
+
+.user-profile .user-item label {
+    width: 30%;
+    text-align: left;
+    line-height: 75px;
+}
+
+.user-profile .user-item input {
+    width: 70%;
+}
+
+.user-profile .user-item input:read-only {
+    cursor: not-allowed;
+}
+
+.user-profile .button-container {
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    bottom: 10px;
+}
+
+.user-profile button {
+    text-transform: uppercase;
+    color: white;
+    font-weight: bold;
+    border: none;
+    width: 60%;
+    background-color: #003C82;
+    padding: 15px;
+    margin: 20px auto;
+}
+
+@media screen and (max-width: 1250px) {
+    .user-profile .user-info,
+    .user-profile .user-contact {
+        padding: 20px 20px 90px 20px;
+    }
+}
+
+@media screen and (max-width: 1050px) {
+
+    .user-profile {
+        flex-wrap: wrap;
+    }
+
+    .user-profile .user-info,
+    .user-profile .user-contact {
+        width: 100%;
+        margin: 10px;
+        padding: 20px 20px 90px 20px;
+    }
+
+    .user-profile h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .user-profile .user-item label {
+        font-size: 15px;
+        line-height: 65px;
+    }
+
+    .user-profile .user-item input {
+        padding: 5px 10px;
+    }
+
+    .user-profile .button-container {
+        right: 0px;
+    }
+
+    .user-profile button {
+        width: 70%;
+    }
+}

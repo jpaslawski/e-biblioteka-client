@@ -1,0 +1,91 @@
+*{
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  color: black;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+input, 
+textarea, 
+select,
+button { 
+  font-family: inherit;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #E6E6E6 inset;
+}
+
+.icon {
+  color: #003C82;
+}
+
+.content {
+  width: 80%;
+  margin: auto;
+  padding: 50px 0;
+}
+
+.none {
+  display: none;
+}
+
+.modal:before {
+  content: "";
+  position: fixed;
+  z-index: 10;
+  background: rgba(0, 0, 0, .7);
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.modal-container {
+  position: fixed;
+  z-index: 11;
+  background-color: white;
+  top: 100px;
+  left: 50%;
+  width: 400px;
+  align-items: center;
+  text-align: center;
+  padding: 20px 40px;
+
+  -webkit-transform: translate(-50%, 0);
+  -ms-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+
+  -webkit-transition: -webkit-transform 0.2s ease-out;
+  transition: transform 0.5s ease-out;
+}
+
+.modal-container .fa-times {
+  position: absolute;
+  right: 25px;
+  top: 15px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  
+  .content {
+    width: 90%;
+    padding: 25px 0;
+  }
+}

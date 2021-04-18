@@ -1,0 +1,390 @@
+.modal-container {
+    width: 500px;
+}
+
+.modal .category-container {
+    display: inline-block;
+}
+
+.modal .book-category {
+    font-weight: initial;
+    background-color: #003C82;
+    color: white;
+    padding: 10px 40px 10px 20px;
+    margin: 5px 10px 5px 0;
+    float: left;
+    width: fit-content;
+    position: relative;
+}
+
+.modal .book-category i {
+    color: white;
+    position: initial;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
+    right: 11px;
+    bottom: 9px;
+}
+
+.filter {
+    position: relative;
+    background-color: #F6F6F6;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.category-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 20px;
+    row-gap: 10px;
+    padding-top: 10px;
+}
+
+.category-item {
+    display: flex;
+}
+
+.category-container input {
+    width: 10%;
+    margin-top: 3px;
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+.category-container label {
+    width: 90%;
+}
+
+.filter .button-group {
+    display: flex;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.button-group button {
+    background-color: #003C82;
+    color: white;
+    padding: 10px 20px;
+    font-size: 15px;
+    border: none;
+    margin-right: 10px;
+}
+
+.button-group button:hover {
+    background-color: #0B589A;
+}
+
+.button-group .green {
+    background-color: green;
+}
+
+.button-group .green:hover {
+    background-color: rgb(0, 156, 0);
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 10px;
+}
+
+.card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    width: 300px;
+    height: 400px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);  
+    transition: box-shadow 0.56s ease-in-out;
+    margin: 10px auto;
+}
+
+.add-book {
+    background-color: #0B589A;
+    color: white;
+    justify-content: center;
+}
+
+.add-book i {
+    font-size: 100px;
+    padding-top: 120px;
+}
+
+.card img {
+    width: 300px;
+    height: 400px;
+    object-fit: cover;
+}
+
+.card:hover {
+    cursor: pointer;
+    box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
+}
+
+.card-info {
+    position: absolute;
+    background-color: #003C82;
+    color: white;
+    width: 100%;
+    height: 0px;
+    bottom: 0;
+    transition: height .5s, animation .5s;
+}
+
+.card-info h3,
+.card-info div {
+    padding: 5px 10px;
+}
+
+.card:hover .card-info {
+    height: 120px;
+    animation: height-grow .5s ease;
+}
+
+.book-container {
+    display: flex;
+    background-color: #F0F0F0;
+    flex-wrap: no-wrap;
+}
+
+.book-image {
+    width: 50%;
+    margin: 2%;
+}
+
+.book-image img {
+    width: 70%;
+    max-height: 800px;
+    margin: 0 0 0 25%;
+}
+
+.book-info {
+    width: 50%;
+    padding: 2% 20px;
+    position: relative;
+    margin-right: 10%;
+}
+
+.book-info h2 {
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+.book-info .book-detail {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.book-info .book-category {
+    background-color: #003C82;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    margin: 5px 10px 5px 0;
+    float: left;
+    width: fit-content;
+    cursor: pointer;
+}
+
+.book-info .category-container {
+    display: inline-block;
+}
+
+.book-info .book-reservation {
+    position: absolute;
+    bottom: 4%;
+    text-align: left;
+}
+
+.book-info .book-reservation button {
+    text-transform: uppercase;
+    color: white;
+    font-weight: bold;
+    border: none;
+    width: 80%;
+    background-color: #003C82;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.book-info .book-reservation button:hover {
+    background-color: #0B589A;
+}
+
+.book-info .book-reservation button:disabled {
+    cursor: not-allowed;
+    background-color: #969696;
+}
+
+.book-info .book-reservation .orange {
+    background-color: orange;
+}
+
+.book-info .book-reservation .orange:hover {
+    background-color: rgb(255, 196, 0);
+}
+
+.book-info .book-reservation {
+    width: 100%;
+}
+
+.book-reservation .message {
+    width: 80%;
+    text-align: justify;
+}
+
+.book-reservation .message a {
+    text-decoration: none;
+    color: #003C82;
+    font-weight: bold;
+}
+
+.no-content {
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+}
+
+@media screen and (max-width: 1450px) {
+    
+    .category-container {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .card-container {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+
+@media screen and (max-width: 1150px) {
+
+    .card-container {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .book-container {
+        flex-wrap: wrap;
+    }
+
+    .book-image,
+    .book-info {
+        width: 100%;
+    }
+
+    .book-image {
+        text-align: center;
+    }
+
+    .book-image img {
+        margin: 15px auto;
+        width: 45%;
+    }
+
+    .book-info {
+        width: 75%;
+        margin: 0 auto;
+    }
+
+    .book-info h2 {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    .book-info .book-detail {
+        font-size: 15px;
+    }
+
+    .book-info .book-category {
+        padding: 8px;
+        font-size: 15px;
+    }
+
+    .book-info .book-reservation {
+        position: initial;
+        margin-top: 20px;
+    }
+
+    .book-info .book-reservation button,
+    .book-reservation .message {
+        width: 100%;
+    }
+
+    .book-reservation .message {
+        padding-bottom: 20px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+
+    .filter input {
+        margin-right: 10px;
+    }
+
+    .category-container {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .card-container {
+        grid-template-columns: 1fr;
+    }
+
+    .book-image {
+        text-align: center;
+        margin: auto;
+    }
+
+    .book-image img {
+        width: 65%;
+    }
+
+
+    .book-info {
+        width: 75%;
+        margin: 0 auto;
+    }
+
+    .book-info h2 {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    .book-info .book-category {
+        padding: 8px;
+        font-size: 15px;
+    }
+
+    .book-info .book-detail {
+        font-size: 15px;
+    }
+
+    .book-info .book-reservation {
+        position: initial;
+        margin-top: 20px;
+    }
+
+    .book-info .book-reservation button,
+    .book-reservation .message {
+        width: 100%;
+    }
+
+    .book-reservation .message {
+        padding-bottom: 20px;
+    }
+
+    .no-content {
+        padding: 10px;
+    }
+}
+
+@keyframes height-grow {
+    from {
+        height: 0px;
+    }
+
+    to {
+        height: 120px;
+    }
+}

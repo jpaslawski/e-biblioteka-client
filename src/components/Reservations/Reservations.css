@@ -1,0 +1,30 @@
+table {
+    width: 80%;
+    margin: 10px auto;
+    border: 1px solid #F6F6F6;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+table button {
+    background-color: #003C82;
+    color: white;
+    font-size: 15px;
+    padding: 5px;
+    border: none;
+}
+
+tr:nth-child(even) {
+    background-color: #F6F6F6;
+}
+
+th {
+    background-color: #003C82;
+    color: white;
+    padding: 10px;
+    border: none;
+}
+
+td {
+    padding: 10px;
+}
