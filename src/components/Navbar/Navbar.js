@@ -14,6 +14,11 @@ const Navbar = ({ token }) => {
             <div className="logo">
                 <h4>eBiblioteka</h4>
             </div>
+            <div className="burger" onClick={() => setIsMenuOpen(!isMenuOpen) }>
+                <div className="line1"></div>
+                <div className="line2"></div>
+                <div className="line3"></div>
+            </div>
             <ul className={isMenuOpen ? "nav-active" : ""}>
                 <li>
                     <NavLink to="/home" activeClassName="active" onClick={() => setIsMenuOpen(false)}>Strona główna</NavLink>
@@ -30,7 +35,7 @@ const Navbar = ({ token }) => {
                 { isProfileOptionsOpen && <li className="profile-item">
                     <Link to="/profile" onClick={() => setIsMenuOpen(false)}>Mój profil</Link>
                 </li> }
-                { isProfileOptionsOpen && <li className="profile-item" onClick={signOut}>
+                { isProfileOptionsOpen && <li className="profile-item">
                     <Link to="/home" onClick={() => {setIsMenuOpen(false); signOut()}}>Wyloguj się</Link>
                 </li>}
                 { !token && <li className="sign-in-link">
@@ -61,11 +66,6 @@ const Navbar = ({ token }) => {
                         <Link to="/sign-up" onClick={() => setIsMenuOpen(false)}>Załóż konto</Link>
                     </div>
                 </div>}
-            <div className="burger" onClick={() => setIsMenuOpen(!isMenuOpen) }>
-                <div className="line1"></div>
-                <div className="line2"></div>
-                <div className="line3"></div>
-            </div>
         </nav>
     )
 }

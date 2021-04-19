@@ -82,6 +82,24 @@ input:-webkit-autofill {
   cursor: pointer;
 }
 
+.modal-container h2 {
+  padding: 10px;
+}
+
+.modal-container button {
+  background-color: #003C82;
+  color: white;
+  padding: 10px 20px;
+  font-size: 15px;
+  border: none;
+  margin-top: 20px;
+}
+
+.modal-container button a {
+  color: white;
+  text-decoration: none;
+}
+
 @media screen and (max-width: 768px) {
   
   .content {

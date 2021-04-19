@@ -1,7 +1,11 @@
 import React from 'react';
 import './Reservations.css';
 import axios from 'axios';
-import { redirectToSignIn } from '../../HelperMethods';
+import { getUserPermissions, handleErrorResponse } from '../../HelperMethods';
+import { RESERVATION_STATUS, USER_PERMISSIONS } from '../../Constants';
+import ModalForbidden from '../Modals/ModalForbidden';
+import UserTable from './UserTable';
+import AdminTable from './AdminTable';
 
 class Reservations extends React.Component {
 
@@ -11,13 +15,38 @@ class Reservations extends React.Component {
         this.state = {
             bookId: this.props.match.params.bookId,
             reservations: [],
+            displayedReservations: [],
+            statusSet: [],
             isModalOpen: false,
-            message: undefined
+            message: undefined,
+            forbidden: false
         }
 
-        this.setModalStatus = this.setModalStatus.bind(this);
-        this.collectBook = this.collectBook.bind(this);
-        this.returnBook = this.returnBook.bind(this);
+        this.changeBookStatus = this.changeBookStatus.bind(this);
+    }
+
+    handleFilter(status) {
+        let statusFilter = this.state.statusSet;
+        statusFilter.includes(status) ? statusFilter.pop(status) : statusFilter.push(status);
+        if (statusFilter.length > 0) {
+            this.setState({
+                statusSet: statusFilter,
+                displayedReservations: this.state.reservations.filter((reservation) => {
+                    return statusFilter.includes(reservation.status)
+                })
+            })
+        } else {
+            this.setState({
+                displayedReservations: this.state.reservations
+            })
+        }
+    }
+
+    clearFilter() {
+        this.setState({
+            statusSet: [],
+            displayedReservations: this.state.reservations
+        })
     }
 
     setModalStatus(status) {
@@ -26,134 +55,136 @@ class Reservations extends React.Component {
         })
     }
 
-    collectBook(reservationId) {
-        axios.put("/api/reservations/" + reservationId + "?newStatus=COLLECTED")
+    changeBookStatus(reservationId, status) {
+        axios.put("/api/reservations/" + reservationId + "?newStatus=" + status)
             .then(response => {
-                let updatedReservation = response.data;
-                let index = this.state.reservations.findIndex(x => x.id === updatedReservation.id);
-                let updatedReservations = this.state.reservations;
-                updatedReservations[index] = updatedReservation;
+                // Save updated reservation
+                const updatedReservation = response.data;
+
+                // Update reservation set
+                let { reservations } = this.state;
+                reservations[reservations.findIndex(x => x.id === updatedReservation.id)] = updatedReservation;
+
+                let message = "";
+                if (status === RESERVATION_STATUS.collected) {
+                    message = "Pomyślnie odebrano książkę! Pamiętaj, aby zwrócić ją do 30 dni.";
+                } else {
+                    message = "Dziękujemy za zwrot książki.";
+                }
 
                 this.setState({
-                    reservations: updatedReservations,
+                    reservations: reservations.slice(),
+                    displayedReservations: reservations.slice(),
                     isModalOpen: true,
-                    message: "Pomyślnie odebrano książkę! Pamiętaj, aby zwrócić ją do 30 dni."
+                    message: message
                 })
             })
             .catch(error => {
-                if (!error.response) {
-                    this.setState({
-                        isModalOpen: true,
-                        message: "Network Error!"
-                    });
-                } else {
-                    this.setState({
-                        isModalOpen: true,
-                        message: error.response.data.message
-                    });
-                }
-            });
-    }
-
-
-    returnBook(reservationId) {
-        axios.put("/api/reservations/" + reservationId + "?newStatus=RETURNED")
-            .then(response => {
-                let updatedReservation = response.data;
-                let index = this.state.reservations.findIndex(x => x.id === updatedReservation.id);
-                let updatedReservations = this.state.reservations;
-                updatedReservations[index] = updatedReservation;
-
                 this.setState({
-                    reservations: updatedReservations,
                     isModalOpen: true,
-                    message: "Dziękujemy za zwrot książki."
+                    message: handleErrorResponse(error.response)
                 })
-            })
-            .catch(error => {
-                if (!error.response) {
-                    this.setState({
-                        isModalOpen: true,
-                        message: "Network Error!"
-                    });
-                } else {
-                    this.setState({
-                        isModalOpen: true,
-                        message: error.response.data.message
-                    });
-                }
             });
     }
 
     componentDidMount() {
-        axios.get("/api/reservations")
-            .then(response => {
-                this.setState({
-                    reservations: response.data
+        const userPermissions = getUserPermissions();
+        if (userPermissions === USER_PERMISSIONS.admin || userPermissions === USER_PERMISSIONS.librarian) {
+            axios.get("/api/admin/reservations")
+                .then(response => {
+                    const data = response.data;
+                    this.setState({
+                        reservations: data.slice(),
+                        displayedReservations: data.slice()
+                    })
                 })
-            })
-            .catch(error => {
-                if (!error.response) {
+                .catch(error => {
                     this.setState({
                         isModalOpen: true,
-                        message: "Network Error!"
-                    });
-                } else {
+                        message: handleErrorResponse(error.response)
+                    })
+                });
+        } else {
+            axios.get("/api/reservations")
+                .then(response => {
+                    const data = response.data;
+                    this.setState({
+                        reservations: data.slice(),
+                        displayedReservations: data.slice()
+                    })
+                })
+                .catch(error => {
                     this.setState({
                         isModalOpen: true,
-                        message: error.response.data.message
-                    });
-                }
-            });
+                        message: handleErrorResponse(error.response)
+                    })
+                });
+        }
 
-        if(sessionStorage.getItem("token") === null) {
-            redirectToSignIn();
+        if (sessionStorage.getItem("token") === null) {
+            this.setState({
+                forbidden: true
+            })
         }
     }
 
     render() {
 
-        let { reservations, isModalOpen, message } = this.state;
+        let { displayedReservations, statusSet, isModalOpen, message, forbidden } = this.state;
 
-        return (
-            <div className="content">
+        const userPermissions = getUserPermissions();
+
+        return forbidden ?
+            <ModalForbidden />
+            :
+            (<div className="content">
                 {isModalOpen && <div className="modal">
                     <div className="modal-container">
                         <i className=" fas fa-times" onClick={() => this.setModalStatus(false)}></i>
                         <div>{message}</div>
                     </div>
                 </div>}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Książka</th>
-                            <th>Data rezerwacji</th>
-                            <th>Status</th>
-                            <th>Działania</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {reservations && reservations.map(({ id, book, date, status }) => (
-                        <tr key={id}>
-                            <td>
-                                <a href={"/books/" + book.id}>{book.name}</a>
-                            </td>
-                            <td>{new Date(date).toLocaleString()}</td>
-                            <td>
-                                {status === "RESERVED" && "Gotowa do obioru"}
-                                {status === "COLLECTED" && "Wypożyczona"}
-                                {status === "RETURNED" && "Zwrócona"}
-                            </td>
-                            <td>
-                                {status === "RESERVED" && <button onClick={() => this.collectBook(id)}>ODBIERZ</button>}
-                                {status === "COLLECTED" && <button onClick={() => this.returnBook(id)}>ZWRÓĆ</button>}
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                <div className="filter">
+                    <span>Status:</span>
+                    <div className="filter-container">
+                        <div className="filter-item">
+                            <input type="checkbox" name="RESERVED"
+                                onChange={() => this.handleFilter(RESERVATION_STATUS.reserved)}
+                                checked={statusSet.includes(RESERVATION_STATUS.reserved)} />
+                            <label htmlFor="RESERVED">Gotowe do odbioru</label>
+                        </div>
+                        <div className="filter-item">
+                            <input type="checkbox" name="COLLECTED"
+                                onChange={() => this.handleFilter(RESERVATION_STATUS.collected)}
+                                checked={statusSet.includes(RESERVATION_STATUS.collected)} />
+                            <label htmlFor="COLLECTED">Wypożyczone</label>
+                        </div>
+                        <div className="filter-item">
+                            <input type="checkbox" name="RETURNED"
+                                onChange={() => this.handleFilter(RESERVATION_STATUS.returned)}
+                                checked={statusSet.includes(RESERVATION_STATUS.returned)} />
+                            <label htmlFor="RETURNED">Zwrócone</label>
+                        </div>
+                    </div>
+                    <div className="button-group" style={{ "marginTop": "10px" }}>
+                        <button onClick={() => this.clearFilter()}>Wyczyść</button>
+                    </div>
+                </div>
+                { displayedReservations.length > 0 ?
+                    <div>
+                        { userPermissions === USER_PERMISSIONS.student ?
+                            <UserTable
+                                displayedReservations={displayedReservations}
+                                changeBookStatus={this.changeBookStatus} />
+                            :
+                            <AdminTable
+                                displayedReservations={displayedReservations} />
+                        }
+                    </div>
+                    :
+                    <div className="no-content">Nie znaleziono żadnych rezerwacji...</div>}
             </div>
-        )
+            )
     }
 }
 

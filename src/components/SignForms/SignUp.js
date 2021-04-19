@@ -1,6 +1,7 @@
 import React from 'react';
 import './SignForms.css';
 import axios from 'axios';
+import { handleErrorResponse, redirectHome } from '../../HelperMethods';
 
 class SignUp extends React.Component {
 
@@ -21,10 +22,8 @@ class SignUp extends React.Component {
             errorMessage: undefined
         }
 
-        this.handleOnChange = this.handleOnChange.bind(this);
         this.signUp = this.signUp.bind(this);
-        this.selectPreviousForm = this.selectPreviousForm.bind(this);
-        this.selectNextForm = this.selectNextForm.bind(this);
+        this.handleOnChange = this.handleOnChange.bind(this);
     }
 
     signUp() {
@@ -44,15 +43,9 @@ class SignUp extends React.Component {
             window.location.href = "/sign-in";
         })
         .catch(error => {
-            if (!error.response) {
-                this.setState({
-                    errorMessage: "Network Error!"
-                });
-            } else {
-                this.setState({
-                    errorMessage: error.response.data.message
-                });
-            }
+            this.setState({
+                errorMessage: handleErrorResponse(error.response)
+            });
         });
     }
 
@@ -87,6 +80,12 @@ class SignUp extends React.Component {
         })
     }
 
+    componentDidMount() {
+        if (sessionStorage.getItem("token") !== null) {
+            redirectHome()
+        }
+    }
+
     render() {
 
         let { firstName, lastName, email, password, repassword, address, city, zipCode, phoneNumber, isNextFormSelected, errorMessage } = this.state;
@@ -103,7 +102,7 @@ class SignUp extends React.Component {
                         <input type="password" name="repassword" placeholder="POWTÓRZ HASŁO" minLength="8" maxLength="16" onChange={this.handleOnChange}></input>
                         
                         {errorMessage && <div className="error-message">{errorMessage}</div>}
-                        <button disabled={!firstName || !lastName || !email || !password || !repassword} onClick={this.selectNextForm} >Dalej</button>
+                        <button disabled={!firstName || !lastName || !email || !password || !repassword} onClick={() => this.selectNextForm()} >Dalej</button>
                     </div>
                     
                     <div className={`user-contact ${isNextFormSelected ? "slide-in-left" : "slide-out-right"}`}>
@@ -113,7 +112,7 @@ class SignUp extends React.Component {
                         <input type="text" name="phoneNumber" placeholder="NUMER TELEFONU" pattern="\d*" maxLength="9" onChange={this.handleOnChange}></input>
                         
                         {errorMessage && <div className="error-message">{errorMessage}</div>}
-                        <button className="secondary" onClick={this.selectPreviousForm} >Wróć</button>
+                        <button className="secondary" onClick={() => this.selectPreviousForm()} >Wróć</button>
                         <button disabled={!address || !city || !zipCode || !phoneNumber} onClick={this.signUp}>Załóż konto</button>
                     </div>
                 </div>

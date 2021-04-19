@@ -8,6 +8,7 @@ import Profile from './components/Profile/Profile';
 import SignIn from './components/SignForms/SignIn';
 import SignUp from './components/SignForms/SignUp';
 import BookDetails from './components/Books/BookDetails';
+import User from './components/Profile/User';
 
 function App() {
 
@@ -16,8 +17,7 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <Navbar 
-          token={token} />
+        <Navbar token={token} />
         <Switch>
           <Route exact path="/books/:bookId" component={BookDetails} />
           <Route path={["/books?category:category", "/books"]} component={Books} />
@@ -25,6 +25,7 @@ function App() {
           <Route path="/sign-in" component={SignIn} />
           <Route path="/sign-up" component={SignUp} />
           <Route path="/profile" component={Profile} />
+          <Route path="/users/:userId" component={User} />
           <Route path={["", "/home"]} component={Home} />
         </Switch>
       </Router>

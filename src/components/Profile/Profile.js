@@ -1,5 +1,7 @@
 import axios from 'axios';
 import React from 'react';
+import { handleErrorResponse } from '../../HelperMethods';
+import ModalForbidden from '../Modals/ModalForbidden';
 import './Profile.css';
 
 class Profile extends React.Component {
@@ -18,12 +20,11 @@ class Profile extends React.Component {
             phoneNumber: undefined,
             isModalOpen: false,
             isPasswordModalOpen: false,
-            message: undefined
+            message: undefined,
+            forbidden: false
         }
 
         this.handleOnChange = this.handleOnChange.bind(this);
-        this.setModalStatus = this.setModalStatus.bind(this);
-        this.setPasswordModalStatus = this.setPasswordModalStatus.bind(this);
 
         this.saveUserContact = this.saveUserContact.bind(this);
         this.updateUserPassword = this.updateUserPassword.bind(this);
@@ -67,15 +68,9 @@ class Profile extends React.Component {
                         })
                     })
                     .catch(error => {
-                        if (!error.response) {
-                            this.setState({
-                                message: "Network Error!"
-                            });
-                        } else {
-                            this.setState({
-                                message: error.response.data.message
-                            });
-                        }
+                        this.setState({
+                            message: handleErrorResponse(error.response)
+                        })
                     });
             } else {
                 this.setState({
@@ -105,15 +100,9 @@ class Profile extends React.Component {
                 })
             })
             .catch(error => {
-                if (!error.response) {
-                    this.setState({
-                        message: "Network Error!"
-                    });
-                } else {
-                    this.setState({
-                        message: error.response.data.message
-                    });
-                }
+                this.setState({
+                    message: handleErrorResponse(error.response)
+                })
             });
     }
 
@@ -125,15 +114,9 @@ class Profile extends React.Component {
                 })
             })
             .catch(error => {
-                if (!error.response) {
-                    this.setState({
-                        message: "Network Error!"
-                    });
-                } else {
-                    this.setState({
-                        message: error.response.data.message
-                    });
-                }
+                this.setState({
+                    message: handleErrorResponse(error.response)
+                })
             });
 
         axios.get("/api/users/contact")
@@ -147,24 +130,28 @@ class Profile extends React.Component {
                 })
             })
             .catch(error => {
-                if (!error.response) {
-                    this.setState({
-                        message: "Network Error!"
-                    });
-                } else {
-                    this.setState({
-                        message: error.response.data.message
-                    });
-                }
+                this.setState({
+                    message: handleErrorResponse(error.response)
+                })
             });
+
+        if (sessionStorage.getItem("token") === null) {
+            this.setState({
+                forbidden: true
+            })
+        }
     }
 
     render() {
 
-        let { userInfo, newPassword, repassword, address, city, zipCode, phoneNumber, isModalOpen, isPasswordModalOpen, message } = this.state;
+        let { userInfo, newPassword, repassword, address, city, zipCode, phoneNumber } = this.state;
 
-        return (
-            <div className="content">
+        let { isModalOpen, isPasswordModalOpen, message, forbidden } = this.state;
+
+        return forbidden ?
+            <ModalForbidden />
+            :
+            (<div className="content">
                 {isModalOpen && <div className="modal">
                     <div className="modal-container">
                         <i className=" fas fa-times" onClick={() => this.setModalStatus(false)}></i>
@@ -176,10 +163,10 @@ class Profile extends React.Component {
                         <i className="fas fa-times" onClick={() => this.setPasswordModalStatus(false)}></i>
                         <div className="sign-form">
                             <h2>Zmiana hasła</h2>
-                            <input type="password" name="newPassword" placeholder="HASŁO"  minLength="8" maxLength="16" onChange={this.handleOnChange}></input>
+                            <input type="password" name="newPassword" placeholder="HASŁO" minLength="8" maxLength="16" onChange={this.handleOnChange}></input>
                             <input type="password" name="repassword" placeholder="POWTÓRZ HASŁO" minLength="8" maxLength="16" onChange={this.handleOnChange}></input>
 
-                            { message && <div className="error-message">{message}</div>}
+                            {message && <div className="error-message">{message}</div>}
                             <button disabled={!newPassword || !repassword} onClick={this.updateUserPassword}>Zapisz</button>
                         </div>
                     </div>
@@ -228,7 +215,7 @@ class Profile extends React.Component {
                     </div>
                 </div>
             </div>
-        )
+            )
     }
 }
 

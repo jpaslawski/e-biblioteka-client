@@ -28,3 +28,13 @@ th {
 td {
     padding: 10px;
 }
+
+td a {
+    color: #003C82;
+}
+
+@media screen and (max-width: 1150px) {
+    table {
+        width: 100%;
+    }
+}

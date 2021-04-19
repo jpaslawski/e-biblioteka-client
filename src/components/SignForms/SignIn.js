@@ -1,6 +1,7 @@
 import React from 'react';
 import './SignForms.css';
 import axios from 'axios';
+import { handleErrorResponse, redirectHome } from '../../HelperMethods';
 
 class SignIn extends React.Component {
 
@@ -44,20 +45,20 @@ class SignIn extends React.Component {
                     }
                 })
                 .catch(error => {
-                    if (!error.response) {
-                        this.setState({
-                            errorMessage: "Network Error!"
-                        });
-                    } else {
-                        this.setState({
-                            errorMessage: "Dane logowania są nieprawidłowe!"
-                        });
-                    }
+                    this.setState({
+                        errorMessage: handleErrorResponse(error.response)
+                    });
                 });
         } else {
             this.setState({
                 errorMessage: "Wypełnij wszystkie pola!"
             });
+        }
+    }
+
+    componentDidMount() {
+        if (sessionStorage.getItem("token") !== null) {
+            redirectHome()
         }
     }
 

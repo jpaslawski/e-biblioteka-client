@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Books.css';
-import { getUserPermissions } from '../../HelperMethods';
+import { getUserPermissions, handleErrorResponse } from '../../HelperMethods';
 import { USER_PERMISSIONS } from '../../Constants';
 
 class BookDetails extends Component {
@@ -17,6 +17,7 @@ class BookDetails extends Component {
             bookImage: undefined,
             bookQuantity: undefined,
             bookCategories: [],
+            availableCopies: undefined,
             isModalOpen: false,
             isBookModalOpen: false,
             message: undefined
@@ -24,7 +25,6 @@ class BookDetails extends Component {
 
         this.addReservation = this.addReservation.bind(this);
         this.updateBook = this.updateBook.bind(this);
-        this.setModalStatus = this.setModalStatus.bind(this);
 
         this.addCategoryToBook = this.addCategoryToBook.bind(this);
         this.deleteCategoryFromBook = this.deleteCategoryFromBook.bind(this);
@@ -35,21 +35,14 @@ class BookDetails extends Component {
             .then(response => {
                 this.setState({
                     isModalOpen: true,
-                    message: "Rezerwacja się powiodła!\n Masz 2 dni na odbiór książki."
+                    message: "Rezerwacja się powiodła! Masz 2 dni na odbiór książki."
                 })
             })
             .catch(error => {
-                if (!error.response) {
-                    this.setState({
-                        isModalOpen: true,
-                        message: "Network Error!"
-                    });
-                } else {
-                    this.setState({
-                        isModalOpen: true,
-                        message: error.response.data.message
-                    })
-                }
+                this.setState({
+                    isModalOpen: true,
+                    message: handleErrorResponse(error.response)
+                });
             });
     }
 
@@ -76,15 +69,9 @@ class BookDetails extends Component {
                 })
             })
             .catch(error => {
-                if (!error.response) {
-                    this.setState({
-                        errorMessage: "Network Error!"
-                    });
-                } else {
-                    this.setState({
-                        errorMessage: error
-                    });
-                }
+                this.setState({
+                    errorMessage: handleErrorResponse(error.response)
+                });
             });
     }
 
@@ -109,54 +96,46 @@ class BookDetails extends Component {
 
     addCategoryToBook(element) {
         const category = element.target.value;
-        let updatedBookCategories = this.state.bookCategories;
-        updatedBookCategories.push(category);
-        let updatedDisplayedCategories = this.state.displayedCategories;
-        updatedDisplayedCategories.splice(updatedDisplayedCategories.indexOf(category), 1);
+        let { bookCategories, displayedCategories } = this.state;
+        bookCategories.push(category);
+        displayedCategories.splice(displayedCategories.indexOf(category), 1);
 
         this.setState({
-            bookCategories: updatedBookCategories,
-            displayedCategories: updatedDisplayedCategories
+            bookCategories: bookCategories,
+            displayedCategories: displayedCategories
         })
     }
 
     deleteCategoryFromBook(category) {
-        let updatedBookCategories = this.state.bookCategories;
-        updatedBookCategories.splice(updatedBookCategories.indexOf(category), 1);
-        let updatedDisplayedCategories = this.state.displayedCategories;
-        updatedDisplayedCategories.push(category);
+        let { bookCategories, displayedCategories } = this.state;
+        bookCategories.splice(bookCategories.indexOf(category), 1);
+        displayedCategories.push(category);
 
         this.setState({
-            bookCategories: updatedBookCategories,
-            displayedCategories: updatedDisplayedCategories
+            bookCategories: bookCategories,
+            displayedCategories: displayedCategories
         })
     }
 
     componentDidMount() {
         axios.get("/api/books/" + this.state.bookId)
             .then(response => {
-                const bookData = response.data;
+                const bookData = response.data.book;
                 this.setState({
                     book: bookData,
                     bookName: bookData.name,
                     bookAuthor: bookData.author,
                     bookImage: bookData.image,
                     bookQuantity: bookData.quantity,
-                    bookCategories: bookData.categories.map(({ name }) => name)
+                    bookCategories: bookData.categories.map(({ name }) => name),
+                    availableCopies: response.data.availableCopies
                 })
             })
             .catch(error => {
-                if (!error.response) {
-                    this.setState({
-                        isModalOpen: true,
-                        message: "Network Error!"
-                    });
-                } else {
-                    this.setState({
-                        isModalOpen: true,
-                        message: error.response.data.message
-                    });
-                }
+                this.setState({
+                    isModalOpen: true,
+                    message: handleErrorResponse(error.response)
+                });
             });
 
         axios.get("/api/categories")
@@ -174,22 +153,16 @@ class BookDetails extends Component {
                 })
             })
             .catch(error => {
-                if (!error.response) {
-                    this.setState({
-                        errorMessage: "Network Error!"
-                    });
-                } else {
-                    this.setState({
-                        errorMessage: error
-                    });
-                }
+                this.setState({
+                    errorMessage: handleErrorResponse(error.response)
+                });
             });
     }
 
     render() {
 
         // Objects and form variables
-        let { book, bookName, bookAuthor, bookImage, bookQuantity, bookCategories, displayedCategories } = this.state;
+        let { book, bookName, bookAuthor, bookImage, bookQuantity, bookCategories, displayedCategories, availableCopies } = this.state;
 
         // Handlers and messages
         let { isModalOpen, isBookModalOpen, message } = this.state;
@@ -233,7 +206,7 @@ class BookDetails extends Component {
                         </div>
                     </div>
                 </div>}
-                <div className="book-container">
+                {Object.keys(book).length > 0 ? <div className="book-container">
                     <div className="book-image">
                         <img src={book.image} alt={book.name} />
                     </div>
@@ -245,9 +218,9 @@ class BookDetails extends Component {
                                 <div key={id} className="book-category" onClick={() => window.location.href = "/books?category=" + name}>{name}</div>
                             ))}
                         </div>
-                        <div className="book-detail">Ilość dostępnych sztuk: {book.quantity}</div>
+                        <div className="book-detail">Ilość dostępnych sztuk: { availableCopies }</div>
                         <div className="book-reservation">
-                            <button onClick={this.addReservation} disabled={token === null || book.quantity < 1}>Zarezerwuj</button>
+                            <button onClick={this.addReservation} disabled={token === null || availableCopies < 1}>Zarezerwuj</button>
                             {(userPermissions === USER_PERMISSIONS.admin || userPermissions === USER_PERMISSIONS.librarian) &&
                                 <button className="orange" onClick={() => this.setBookModalStatus(true)}>Edytuj dane książki</button>}
                             {!token && <div className="message">
@@ -256,9 +229,10 @@ class BookDetails extends Component {
                         </div>
                     </div>
                 </div>
-            </div>
-        )
+                    :
+                    <h2 style={{ "textAlign": "center" }}>Nie znaleziono książki.</h2>}
+            </div>)
+
     }
 }
-
 export default BookDetails;
