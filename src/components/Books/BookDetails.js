@@ -4,6 +4,7 @@ import axios from 'axios';
 import './Books.css';
 import { getUserPermissions, handleErrorResponse } from '../../HelperMethods';
 import { USER_PERMISSIONS } from '../../Constants';
+import MessageModal from '../Modals/MessageModal';
 
 class BookDetails extends Component {
     constructor(props) {
@@ -23,11 +24,15 @@ class BookDetails extends Component {
             message: undefined
         }
 
+        // API call functions
         this.addReservation = this.addReservation.bind(this);
         this.updateBook = this.updateBook.bind(this);
 
+        // Handlers
         this.addCategoryToBook = this.addCategoryToBook.bind(this);
         this.deleteCategoryFromBook = this.deleteCategoryFromBook.bind(this);
+        this.handleOnChange = this.handleOnChange.bind(this);
+        this.setModalStatus = this.setModalStatus.bind(this);
     }
 
     addReservation() {
@@ -55,9 +60,9 @@ class BookDetails extends Component {
             categories: this.state.bookCategories
         }
 
-        axios.put("/api/admin/books/" + this.state.bookId, updatedBook)
+        axios.put("/api/library/books/" + this.state.bookId, updatedBook)
             .then(response => {
-                const updatedBookData = response.data;
+                const updatedBookData = response.data.book;
                 this.setState({
                     book: updatedBookData,
                     bookName: updatedBookData.name,
@@ -65,10 +70,12 @@ class BookDetails extends Component {
                     bookImage: updatedBookData.image,
                     bookQuantity: updatedBookData.quantity,
                     bookCategories: updatedBookData.categories.map(({ name }) => name),
+                    availableCopies: response.data.availableCopies,
                     isBookModalOpen: false
                 })
             })
             .catch(error => {
+                console.log(error);
                 this.setState({
                     errorMessage: handleErrorResponse(error.response)
                 });
@@ -172,21 +179,16 @@ class BookDetails extends Component {
 
         return (
             <div className="content">
-                {isModalOpen && <div className="modal" id="filter">
-                    <div className="modal-container">
-                        <i className=" fas fa-times" onClick={() => this.setModalStatus(false)}></i>
-                        <div>{message}</div>
-                    </div>
-                </div>}
+                { isModalOpen && <MessageModal message={message} setModalStatus={this.setModalStatus} />}
                 { isBookModalOpen && <div className="modal">
                     <div className="modal-container">
                         <i className="fas fa-times" onClick={() => this.setBookModalStatus(false)}></i>
                         <div className="sign-form">
                             <h2>Edycja danych książki</h2>
-                            <input name="bookName" value={bookName} placeholder="TYTUŁ KSIĄŻKI" onChange={this.handleOnChange} />
-                            <input name="bookAuthor" value={bookAuthor} placeholder="AUTOR" onChange={this.handleOnChange} />
-                            <input name="bookImage" value={bookImage} placeholder="OKŁADKA (URL)" onChange={this.handleOnChange} />
-                            <input name="bookQuantity" value={bookQuantity} placeholder="ILOŚĆ EGZEMPLARZY" onChange={this.handleOnChange} />
+                            <input type="text" name="bookName" value={bookName} placeholder="TYTUŁ KSIĄŻKI" autoComplete="off1" onChange={this.handleOnChange} />
+                            <input type="text" name="bookAuthor" value={bookAuthor} placeholder="AUTOR" autoComplete="off2" onChange={this.handleOnChange} />
+                            <input type="text" name="bookImage" value={bookImage} placeholder="OKŁADKA (URL)" autoComplete="off3" onChange={this.handleOnChange} />
+                            <input type="number" name="bookQuantity" value={bookQuantity} placeholder="ILOŚĆ EGZEMPLARZY" autoComplete="off4" onChange={this.handleOnChange} />
                             <div className="category-container">
                                 {bookCategories !== [] && bookCategories.map((category) => (
                                     <div key={category} className="book-category" onClick={() => this.deleteCategoryFromBook(category)}>
@@ -220,7 +222,8 @@ class BookDetails extends Component {
                         </div>
                         <div className="book-detail">Ilość dostępnych sztuk: { availableCopies }</div>
                         <div className="book-reservation">
-                            <button onClick={this.addReservation} disabled={token === null || availableCopies < 1}>Zarezerwuj</button>
+                            {userPermissions === USER_PERMISSIONS.student &&
+                                <button onClick={this.addReservation} disabled={token === null || availableCopies < 1}>Zarezerwuj</button>}
                             {(userPermissions === USER_PERMISSIONS.admin || userPermissions === USER_PERMISSIONS.librarian) &&
                                 <button className="orange" onClick={() => this.setBookModalStatus(true)}>Edytuj dane książki</button>}
                             {!token && <div className="message">

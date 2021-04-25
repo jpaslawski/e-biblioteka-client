@@ -1,3 +1,5 @@
+import { USER_PERMISSIONS } from "./Constants";
+
 export function signOut() {
     sessionStorage.clear();
     window.location.href = "/home";
@@ -40,4 +42,23 @@ export function sortAlphabetically(set) {
         if (a > b) { return 1; }
         return 0;
     })
+}
+
+export function transformUserRole(userRole) {
+    switch(userRole) {
+        case USER_PERMISSIONS.student:
+            return "Student"
+        case USER_PERMISSIONS.librarian:
+            return "Bibliotekarz"
+        default:
+            return "Student"
+    }
+}
+
+export function transformLongText(text) {
+    if(text.length > 50) {
+        return text.substring(0, 50) + "..."
+    } else {
+        return text
+    }
 }

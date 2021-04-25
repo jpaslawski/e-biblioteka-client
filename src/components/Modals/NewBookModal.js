@@ -39,7 +39,7 @@ class NewBookModal extends Component {
             categories: this.state.bookCategories
         }
 
-        axios.post("/api/admin/books", newBook)
+        axios.post("/api/library/books", newBook)
             .then(response => {
                 this.props.updateBooks(response.data)
 
@@ -94,10 +94,10 @@ class NewBookModal extends Component {
                     <i className="fas fa-times" onClick={() => this.props.setBookModalStatus(false)}></i>
                     <div className="sign-form">
                         <h2>Dodanie nowej książki</h2>
-                        <input type="text" name="bookName" placeholder="TYTUŁ KSIĄŻKI" onChange={this.handleOnChange} />
-                        <input type="text" name="bookAuthor" placeholder="AUTOR" onChange={this.handleOnChange} />
-                        <input type="text" name="bookImage" placeholder="OKŁADKA (URL)" onChange={this.handleOnChange} />
-                        <input type="number" name="bookQuantity" placeholder="ILOŚĆ EGZEMPLARZY" onChange={this.handleOnChange} />
+                        <input type="text" name="bookName" placeholder="TYTUŁ KSIĄŻKI" autoComplete="off1" onChange={this.handleOnChange} />
+                        <input type="text" name="bookAuthor" placeholder="AUTOR" autoComplete="off2" onChange={this.handleOnChange} />
+                        <input type="text" name="bookImage" placeholder="OKŁADKA (URL)" autoComplete="off3" onChange={this.handleOnChange} />
+                        <input type="number" name="bookQuantity" placeholder="ILOŚĆ EGZEMPLARZY" autoComplete="off4" onChange={this.handleOnChange} />
                         <div className="category-container">
                             {bookCategories !== [] && bookCategories.map((category) => (
                                 <div key={category} className="book-category" onClick={() => this.deleteCategoryFromBook(category)}>

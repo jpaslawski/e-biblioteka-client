@@ -20,7 +20,7 @@ class User extends React.Component {
 
 
     componentDidMount() {
-        axios.get("/api/admin/users/" + this.state.userId)
+        axios.get("/api/library/users/" + this.state.userId)
             .then(response => {
                 this.setState({
                     user: response.data

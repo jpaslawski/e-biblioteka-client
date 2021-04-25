@@ -94,22 +94,22 @@ class SignUp extends React.Component {
             <div className="content">
                 <div className="sign-form">
                     <h2>Tworzenie nowego konta</h2>
-                    <div className={`user-info ${isNextFormSelected ? "slide-out-left" : "slide-in-right"}`}>
-                        <input type="text" name="firstName" placeholder="IMIĘ" onChange={this.handleOnChange}></input>
-                        <input type="text" name="lastName" placeholder="NAZWISKO" onChange={this.handleOnChange}></input>
-                        <input type="text" name="email" placeholder="E-MAIL" onChange={this.handleOnChange}></input>
-                        <input type="password" name="password" placeholder="HASŁO"  minLength="8" maxLength="16" onChange={this.handleOnChange}></input>
-                        <input type="password" name="repassword" placeholder="POWTÓRZ HASŁO" minLength="8" maxLength="16" onChange={this.handleOnChange}></input>
+                    <div className={`user-info ${isNextFormSelected ? "slide-out-left" : "slide-in-right"}`} >
+                        <input type="text" name="firstName" placeholder="IMIĘ" autoComplete="off1" onChange={this.handleOnChange} />
+                        <input type="text" name="lastName" placeholder="NAZWISKO" autoComplete="off2" onChange={this.handleOnChange} />
+                        <input type="email" name="email" placeholder="E-MAIL" autoComplete="off3" onChange={this.handleOnChange} />
+                        <input type="password" name="password" placeholder="HASŁO"  minLength="8" maxLength="16" onChange={this.handleOnChange} />
+                        <input type="password" name="repassword" placeholder="POWTÓRZ HASŁO" minLength="8" maxLength="16" onChange={this.handleOnChange} />
                         
                         {errorMessage && <div className="error-message">{errorMessage}</div>}
                         <button disabled={!firstName || !lastName || !email || !password || !repassword} onClick={() => this.selectNextForm()} >Dalej</button>
                     </div>
                     
                     <div className={`user-contact ${isNextFormSelected ? "slide-in-left" : "slide-out-right"}`}>
-                        <input type="text" name="address" placeholder="ADRES" onChange={this.handleOnChange}></input>
-                        <input type="text" name="city" placeholder="MIEJSCOWOŚĆ" onChange={this.handleOnChange}></input>
-                        <input type="text" name="zipCode" placeholder="KOD POCZTOWY" pattern="\d*" maxLength="5" onChange={this.handleOnChange}></input>
-                        <input type="text" name="phoneNumber" placeholder="NUMER TELEFONU" pattern="\d*" maxLength="9" onChange={this.handleOnChange}></input>
+                        <input type="text" name="address" placeholder="ADRES" autoComplete="off4" onChange={this.handleOnChange} />
+                        <input type="text" name="city" placeholder="MIEJSCOWOŚĆ" autoComplete="off5" onChange={this.handleOnChange} />
+                        <input type="text" name="zipCode" placeholder="KOD POCZTOWY" pattern="\d*" maxLength="5" autoComplete="off6" onChange={this.handleOnChange} />
+                        <input type="text" name="phoneNumber" placeholder="NUMER TELEFONU" pattern="\d*" maxLength="9" autoComplete="off7" onChange={this.handleOnChange} />
                         
                         {errorMessage && <div className="error-message">{errorMessage}</div>}
                         <button className="secondary" onClick={() => this.selectPreviousForm()} >Wróć</button>

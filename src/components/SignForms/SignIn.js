@@ -69,8 +69,7 @@ class SignIn extends React.Component {
             <div className="content">
                 <div className="sign-form">
                     <h2>Logowanie</h2>
-                    <input type="text" name="email" placeholder="E-MAIL" onChange={this.handleOnChange}/>
-
+                    <input type="text" name="email" placeholder="E-MAIL" autoComplete="new-off" onChange={this.handleOnChange}/>
                     <input type="password" name="password" placeholder="HASŁO" onChange={this.handleOnChange} />
 
                     { errorMessage && <div className="error-message">{errorMessage}</div> }

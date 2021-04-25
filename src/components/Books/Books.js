@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './Books.css';
-import { getUserPermissions, handleErrorResponse, sortAlphabetically } from '../../HelperMethods';
+import { getUserPermissions, handleErrorResponse, sortAlphabetically, transformLongText } from '../../HelperMethods';
 import { USER_PERMISSIONS } from '../../Constants';
 import NewCategoryModal from '../Modals/NewCategoryModal';
 import NewBookModal from '../Modals/NewBookModal';
@@ -145,8 +145,8 @@ class Books extends Component {
                         ))}
                     </div>
                     <div className="button-group">
-                        {(userPermissions === USER_PERMISSIONS.admin || userPermissions === USER_PERMISSIONS.librarian) &&
-                            <button className="green" onClick={() => this.setCategoryModalStatus(!isCategoryModalOpen)}>Dodaj kategorię</button>}
+                        { (userPermissions === USER_PERMISSIONS.admin || userPermissions === USER_PERMISSIONS.librarian) &&
+                            <button className="green" onClick={ () => this.setCategoryModalStatus(!isCategoryModalOpen) }>Dodaj kategorię</button> }
                         <button onClick={() => this.clearFilter()}>Wyczyść</button>
                     </div>
                 </div>
@@ -160,15 +160,15 @@ class Books extends Component {
                         </div>
                     }
                     {displayedBooks && displayedBooks.map(({ id, name, author, image }) => (
-                        <div key={id} className="card">
-                            <a href={"/books/" + id}>
-                                <img key={image} src={image} alt={name} />
+                        <a key={ id } href={ "/books/" + id }>
+                            <div className="card">
+                                <img key={ image } src={image} alt={ name } />
                                 <div className="card-info">
-                                    <h3 key={name}>{name}</h3>
-                                    <div key={author}>{author}</div>
+                                    <h3 key={ name }>{ transformLongText(name) }</h3>
+                                    <div key={ author }>{ author }</div>
                                 </div>
-                            </a>
-                        </div>
+                            </div>
+                        </a>
                     ))}
                 </div>
                 { displayedBooks.length === 0 && <div className="no-content">Nie znaleziono żadnych książek.</div>}

@@ -61,6 +61,14 @@ input {
     margin: 20px auto;
 }
 
+.button-group .red {
+    background-color: red;
+}
+
+.button-group .green:hover {
+    background-color: rgb(255, 65, 65);
+}
+
 @media screen and (max-width: 1250px) {
     .user-profile .user-info,
     .user-profile .user-contact {

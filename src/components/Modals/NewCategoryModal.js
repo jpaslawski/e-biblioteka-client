@@ -29,7 +29,7 @@ class NewCategoryModal extends Component {
         }
 
         if (!this.props.categories.includes(this.state.categoryName)) {
-            axios.post("/api/admin/categories", newCategory)
+            axios.post("/api/library/categories", newCategory)
                 .then(() => {
 
                     this.props.updateCategories(this.state.categoryName)
@@ -62,7 +62,7 @@ class NewCategoryModal extends Component {
                     <i className=" fas fa-times" onClick={() => this.props.setCategoryModalStatus(false)}></i>
                     <div className="sign-form">
                         <h2>Dodanie nowej kategorii</h2>
-                        <input name="categoryName" placeholder="NAZWA KATEGORII" onChange={this.handleOnChange} />
+                        <input type="text" name="categoryName" placeholder="NAZWA KATEGORII" autoComplete="off" onChange={this.handleOnChange} />
                         {errorMessage && <div className="error-message">{errorMessage}</div>}
                         <button disabled={!categoryName} onClick={this.addCategory}>Dodaj</button>
                     </div>

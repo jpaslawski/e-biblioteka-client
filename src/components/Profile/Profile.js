@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 import { handleErrorResponse } from '../../HelperMethods';
+import MessageModal from '../Modals/MessageModal';
 import ModalForbidden from '../Modals/ModalForbidden';
 import './Profile.css';
 
@@ -24,10 +25,13 @@ class Profile extends React.Component {
             forbidden: false
         }
 
-        this.handleOnChange = this.handleOnChange.bind(this);
-
+        // API call functions
         this.saveUserContact = this.saveUserContact.bind(this);
         this.updateUserPassword = this.updateUserPassword.bind(this);
+
+        // Handlers
+        this.handleOnChange = this.handleOnChange.bind(this);
+        this.setModalStatus = this.setModalStatus.bind(this);
     }
 
     handleOnChange(element) {
@@ -152,12 +156,7 @@ class Profile extends React.Component {
             <ModalForbidden />
             :
             (<div className="content">
-                {isModalOpen && <div className="modal">
-                    <div className="modal-container">
-                        <i className=" fas fa-times" onClick={() => this.setModalStatus(false)}></i>
-                        <div>{message}</div>
-                    </div>
-                </div>}
+                { isModalOpen && <MessageModal message={ message } setModalStatus={ this.setModalStatus } /> }
                 { isPasswordModalOpen && <div className="modal">
                     <div className="modal-container">
                         <i className="fas fa-times" onClick={() => this.setPasswordModalStatus(false)}></i>
@@ -195,19 +194,19 @@ class Profile extends React.Component {
                         <h2>Dane kontaktowe</h2>
                         <div className="user-item">
                             <label>Adres:</label>
-                            <input name="address" value={address} onChange={this.handleOnChange} />
+                            <input type="text" name="address" value={address} autoComplete="off1" onChange={this.handleOnChange} />
                         </div>
                         <div className="user-item">
                             <label>Miejscowość:</label>
-                            <input name="city" value={city} onChange={this.handleOnChange} />
+                            <input type="text" name="city" value={city} autoComplete="off2" onChange={this.handleOnChange} />
                         </div>
                         <div className="user-item">
                             <label>Kod pocztowy:</label>
-                            <input name="zipCode" value={zipCode} onChange={this.handleOnChange} />
+                            <input type="text" name="zipCode" value={zipCode} pattern="\d*" maxLength="5" autoComplete="off3" onChange={this.handleOnChange} />
                         </div>
                         <div className="user-item">
                             <label>Telefon:</label>
-                            <input name="phoneNumber" value={phoneNumber} onChange={this.handleOnChange} />
+                            <input type="text" name="phoneNumber" value={phoneNumber} pattern="\d*" maxLength="9" autoComplete="off4" onChange={this.handleOnChange} />
                         </div>
                         <div className="button-container">
                             <button onClick={this.saveUserContact}>Zapisz</button>

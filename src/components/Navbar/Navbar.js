@@ -1,7 +1,8 @@
 import React from 'react';
 import './Navbar.css';
 import { Link, NavLink } from 'react-router-dom';
-import { signOut } from '../../HelperMethods';
+import { getUserPermissions, signOut } from '../../HelperMethods';
+import { USER_PERMISSIONS } from '../../Constants';
 
 
 const Navbar = ({ token }) => {
@@ -28,6 +29,9 @@ const Navbar = ({ token }) => {
                 </li>
                 { token && <li>
                     <NavLink to="/reservations" activeClassName="active" onClick={() => setIsMenuOpen(false)}>Rezerwacje</NavLink>
+                </li>}
+                { token && getUserPermissions(token) === USER_PERMISSIONS.admin && <li>
+                    <NavLink to="/users" activeClassName="active" onClick={() => setIsMenuOpen(false)}>Użytkownicy</NavLink>
                 </li>}
                 { token && <li className="profile-link" onClick={() => setProfileOptionsOpen(!isProfileOptionsOpen)}>
                     Profil <i className="fas fa-angle-down"></i>

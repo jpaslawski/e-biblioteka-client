@@ -6,6 +6,7 @@ import { RESERVATION_STATUS, USER_PERMISSIONS } from '../../Constants';
 import ModalForbidden from '../Modals/ModalForbidden';
 import UserTable from './UserTable';
 import AdminTable from './AdminTable';
+import MessageModal from '../Modals/MessageModal';
 
 class Reservations extends React.Component {
 
@@ -22,12 +23,18 @@ class Reservations extends React.Component {
             forbidden: false
         }
 
+        // API call functions
         this.changeBookStatus = this.changeBookStatus.bind(this);
+
+        // Handlers
+        this.setModalStatus = this.setModalStatus.bind(this);
     }
 
     handleFilter(status) {
         let statusFilter = this.state.statusSet;
         statusFilter.includes(status) ? statusFilter.pop(status) : statusFilter.push(status);
+        
+        // Filter reservations by selected filters
         if (statusFilter.length > 0) {
             this.setState({
                 statusSet: statusFilter,
@@ -35,7 +42,9 @@ class Reservations extends React.Component {
                     return statusFilter.includes(reservation.status)
                 })
             })
-        } else {
+        } 
+        // Show all resrvations if no filters
+        else {
             this.setState({
                 displayedReservations: this.state.reservations
             })
@@ -90,7 +99,7 @@ class Reservations extends React.Component {
     componentDidMount() {
         const userPermissions = getUserPermissions();
         if (userPermissions === USER_PERMISSIONS.admin || userPermissions === USER_PERMISSIONS.librarian) {
-            axios.get("/api/admin/reservations")
+            axios.get("/api/library/reservations")
                 .then(response => {
                     const data = response.data;
                     this.setState({
@@ -138,12 +147,7 @@ class Reservations extends React.Component {
             <ModalForbidden />
             :
             (<div className="content">
-                {isModalOpen && <div className="modal">
-                    <div className="modal-container">
-                        <i className=" fas fa-times" onClick={() => this.setModalStatus(false)}></i>
-                        <div>{message}</div>
-                    </div>
-                </div>}
+                {isModalOpen && <MessageModal message={ message } setModalStatus={this.setModalStatus} /> }
                 <div className="filter">
                     <span>Status:</span>
                     <div className="filter-container">
