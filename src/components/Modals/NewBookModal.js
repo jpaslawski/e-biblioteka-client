@@ -86,7 +86,7 @@ class NewBookModal extends Component {
 
     render() {
 
-        let { bookName, bookAuthor, bookQuantity, bookImage, bookCategories, displayedCategories, errorMessage } = this.state;
+        let { bookName, bookAuthor, bookQuantity, bookCategories, displayedCategories, errorMessage } = this.state;
 
         return (
             <div className="modal">
@@ -113,7 +113,7 @@ class NewBookModal extends Component {
                             ))}
                         </select>
                         {errorMessage && <div className="error-message">{errorMessage}</div>}
-                        <button disabled={!bookName || !bookAuthor || !bookImage || !bookQuantity} onClick={this.addBook}>Dodaj</button>
+                        <button disabled={!bookName || !bookAuthor || !bookQuantity} onClick={this.addBook}>Dodaj</button>
                     </div>
                 </div>
             </div>

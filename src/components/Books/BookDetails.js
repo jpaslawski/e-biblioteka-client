@@ -204,13 +204,17 @@ class BookDetails extends Component {
                                 ))}
                             </select>
                             {message && <div className="error-message">{message}</div>}
-                            <button disabled={!bookName || !bookAuthor || !bookImage || !bookQuantity} onClick={this.updateBook}>Zapisz</button>
+                            <button disabled={!bookName || !bookAuthor || !bookQuantity} onClick={this.updateBook}>Zapisz</button>
                         </div>
                     </div>
                 </div>}
                 {Object.keys(book).length > 0 ? <div className="book-container">
                     <div className="book-image">
-                        <img src={book.image} alt={book.name} />
+                        { book.image !== null ?
+                            <img src={book.image} alt={book.name} />
+                            :
+                            <div><i className="fas fa-camera"></i></div>
+                        }
                     </div>
                     <div className="book-info">
                         <h2>{book.name}</h2>

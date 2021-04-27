@@ -161,11 +161,11 @@ class Books extends Component {
                     }
                     {displayedBooks && displayedBooks.map(({ id, name, author, image }) => (
                         <a key={ id } href={ "/books/" + id }>
-                            <div className="card">
-                                <img key={ image } src={image} alt={ name } />
+                            <div className={ image === null ? "no-image card" : "card" } >
+                                { image !== null ? <img key={ image } src={image} alt={ name } /> : <i className="fas fa-camera"></i>}
                                 <div className="card-info">
-                                    <h3 key={ name }>{ transformLongText(name) }</h3>
-                                    <div key={ author }>{ author }</div>
+                                    <h3>{ transformLongText(name) }</h3>
+                                    <div>{ author }</div>
                                 </div>
                             </div>
                         </a>

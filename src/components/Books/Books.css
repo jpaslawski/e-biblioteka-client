@@ -107,7 +107,14 @@
     justify-content: center;
 }
 
-.add-book i {
+.no-image {
+    background-color: #444444;
+    color: white;
+    justify-content: center;
+}
+
+.add-book i,
+.no-image i {
     font-size: 100px;
     padding-top: 120px;
 }
@@ -116,6 +123,14 @@
     width: 300px;
     height: 400px;
     object-fit: cover;
+}
+
+img .empty {
+    width: 300px;
+    height: 400px;
+    background-color: #444444;
+    color: white;
+    justify-content: center;
 }
 
 .card:hover {
@@ -158,6 +173,17 @@
     width: 70%;
     max-height: 800px;
     margin: 0 0 0 25%;
+}
+
+.book-image div {
+    background-color: #444444;
+    font-size: 100px;
+    padding-top: 120px;
+    text-align: center;
+    color: white;
+    width: 300px;
+    margin: 0 0 0 25%;
+    height: 400px;
 }
 
 .book-info {
@@ -278,7 +304,8 @@
         text-align: center;
     }
 
-    .book-image img {
+    .book-image img,
+    .book-image div {
         margin: 15px auto;
         width: 45%;
     }
@@ -336,7 +363,8 @@
         margin: auto;
     }
 
-    .book-image img {
+    .book-image img,
+    .book-image div {
         width: 65%;
     }
 
